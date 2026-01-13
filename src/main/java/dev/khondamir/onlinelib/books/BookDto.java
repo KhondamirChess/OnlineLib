@@ -1,4 +1,4 @@
-package dev.khondamir.onlinelib;
+package dev.khondamir.onlinelib.books;
 
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.*;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public record Book(
+public record BookDto(
         Long id,
 
         @NotBlank
@@ -15,7 +15,7 @@ public record Book(
 
         @NotBlank
         @Size(max = 30)
-        String authonName,
+        String authorName,
 
         @Min(0)
         @NotNull

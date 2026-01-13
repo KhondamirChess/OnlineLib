@@ -1,5 +1,6 @@
-package dev.khondamir.onlinelib;
+package dev.khondamir.onlinelib.web;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -56,9 +57,9 @@ public class GlobalExceptionHandler {
                 .body(result);
     }
 
-    @ExceptionHandler(NoSuchElementException.class)
+    @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<ServerErrorDto> handleNotFoundException(
-            NoSuchElementException ex
+            EntityNotFoundException ex
     ) {
         log.error("Get exception", ex);
         var result = new ServerErrorDto(

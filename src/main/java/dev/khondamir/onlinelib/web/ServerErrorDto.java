@@ -1,4 +1,4 @@
-package dev.khondamir.onlinelib;
+package dev.khondamir.onlinelib.web;
 
 import java.time.LocalDateTime;
 

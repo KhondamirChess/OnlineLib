@@ -1,5 +1,7 @@
 package dev.khondamir.onlinelib;
 
+import dev.khondamir.onlinelib.books.BookDto;
+import dev.khondamir.onlinelib.books.BookService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,17 +9,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import tools.jackson.databind.ObjectMapper;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc
 @SpringBootTest
-class BookControllerTest {
+class BookDtoControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -29,7 +29,7 @@ class BookControllerTest {
 
     @Test
     void shouldSuccessCreateBook() throws Exception {
-        var book = new Book(
+        var book = new BookDto(
                 null, "some-book", "Pasha", 2024, 100, 6000
         );
 
@@ -44,10 +44,10 @@ class BookControllerTest {
                 .getResponse()
                 .getContentAsString();
 
-        Book bookResponse = objectMapper.readValue(createdBookJson, Book.class);
+        BookDto bookDtoResponse = objectMapper.readValue(createdBookJson, BookDto.class);
 
-        Assertions.assertNotNull(bookResponse.id());
-        Assertions.assertEquals(book.name(), bookResponse.name());
+        Assertions.assertNotNull(bookDtoResponse.id());
+        Assertions.assertEquals(book.name(), bookDtoResponse.name());
     }
 
     @Test
