@@ -7,6 +7,17 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
+@NamedEntityGraph(
+        name = "author-with-books",
+        attributeNodes = {
+                @NamedAttributeNode("books")
+        }
+)
+@NamedEntityGraph(
+        name = "author-without-books",
+        attributeNodes = {
+        }
+)
 @Table(name="authors")
 public class AuthorEntity {
     @Id

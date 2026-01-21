@@ -1,9 +1,12 @@
 package dev.khondamir.onlinelib.author;
 
 import jakarta.transaction.Transactional;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+
+import java.util.List;
 
 public interface AuthorRepository extends JpaRepository<AuthorEntity, Long> {
     boolean existsByName(String name);
@@ -16,4 +19,20 @@ public interface AuthorRepository extends JpaRepository<AuthorEntity, Long> {
                     WHERE b.authorId = :authorId
             """)
     void deleteAuthorFromBooks(Long authorId);
+
+//    @Query("""
+//            SELECT a from AuthorEntity a
+//            JOIN FETCH a.books
+//            """)
+//    List<AuthorEntity> findAllWithBooks();
+
+//    @Query("SELECT a from AuthorEntity a")
+//    @EntityGraph(attributePaths = "books")
+//    List<AuthorEntity> findAllWithBooks();
+
+
+    @Query("SELECT a from AuthorEntity a")
+    @EntityGraph(value = "author-with-books")
+    List<AuthorEntity> findAllWithBooks();
+
 }
