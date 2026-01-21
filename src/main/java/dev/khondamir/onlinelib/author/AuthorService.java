@@ -1,5 +1,6 @@
 package dev.khondamir.onlinelib.author;
 
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -35,5 +36,15 @@ public class AuthorService {
                 .stream()
                 .map(entityConverter::toDomain)
                 .toList();
+    }
+
+    @Transactional
+    public void deleteAuthor(Long authorId) {
+        if (!authorRepository.existsById(authorId)) {
+            throw new IllegalArgumentException("Author does not exist with id=%s"
+                    .formatted(authorId));
+        }
+        authorRepository.deleteAuthorFromBooks(authorId);
+        authorRepository.deleteById(authorId);
     }
 }

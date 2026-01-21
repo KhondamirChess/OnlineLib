@@ -13,7 +13,7 @@ public class BookEntity {
     @Column(name="name", nullable=false)
     private String name;
 
-    @Column(name="author_id", nullable=false)
+    @Column(name="author_id")
     private Long authorId;
 
     @Column(name="pub_year", nullable=false)

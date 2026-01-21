@@ -45,4 +45,16 @@ public class AuthorController {
                 .toList();
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteAuthor(
+            @PathVariable("id") Long authorId
+    ){
+        log.info("Deleting author: {}", authorId);
+        authorService.deleteAuthor(authorId);
+
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .build();
+    }
+
 }
