@@ -21,19 +21,19 @@ public interface BookRepository extends JpaRepository<BookEntity, Long> {
 
     @Query("""
             SELECT b from BookEntity b                       
-            WHERE (:authorName IS NULL OR b.authorName = :authorName)
+            WHERE (:authorId IS NULL OR b.authorId = :authorId)
             AND (:cost IS NULL OR b.cost = :cost)
             
             """)
     List<BookEntity> searchBooks(
-            String authorName,
+            Long authorId,
             @Param("cost") Integer maxCost,
             Pageable pageable
     );
 
     @Query(value = """
             SELECT * from books b                       
-            WHERE (:authorName IS NULL OR b.author_name = :authorName)
+            WHERE (:authorId IS NULL OR b.authorId = :authorId)
             AND (:cost IS NULL OR b.cost = :cost)
             """, nativeQuery = true)
     List<BookEntity> searchBooksNative(
@@ -46,7 +46,7 @@ public interface BookRepository extends JpaRepository<BookEntity, Long> {
     @Query("""
     UPDATE BookEntity b
     SET b.name = :name,
-    b.authorName = :authorName,
+    b.authorId = :authorId,
     b.publicationYear = :pubYear,
     b.pageNumber = :pageNum,
     b.cost = :cost
@@ -55,7 +55,7 @@ public interface BookRepository extends JpaRepository<BookEntity, Long> {
     void updateBook(
             @Param("id") Long id,
             @Param("name") String name,
-            @Param("authorName") String authorName,
+            @Param("authorName") Long authorId,
             @Param("pubYear") Integer publicationYear,
             @Param("pageNum") Integer pageNumber,
             @Param("cost") Integer cost

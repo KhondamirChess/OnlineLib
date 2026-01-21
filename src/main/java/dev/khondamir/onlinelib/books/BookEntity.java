@@ -13,8 +13,8 @@ public class BookEntity {
     @Column(name="name", nullable=false)
     private String name;
 
-    @Column(name="author_name", nullable=false)
-    private String authorName;
+    @Column(name="author_id", nullable=false)
+    private Long authorId;
 
     @Column(name="pub_year", nullable=false)
     private Integer publicationYear;
@@ -32,10 +32,10 @@ public class BookEntity {
     public BookEntity() {
     }
 
-    public BookEntity(Long id, String name, String authorName, Integer publicationYear, Integer pageNumber, Integer cost) {
+    public BookEntity(Long id, String name, Long authorId, Integer publicationYear, Integer pageNumber, Integer cost) {
         this.id = id;
         this.name = name;
-        this.authorName = authorName;
+        this.authorId = authorId;
         this.publicationYear = publicationYear;
         this.pageNumber = pageNumber;
         this.cost = cost;
@@ -49,12 +49,12 @@ public class BookEntity {
         this.name = name;
     }
 
-    public String getAuthorName() {
-        return authorName;
+    public Long getAuthorId() {
+        return authorId;
     }
 
-    public void setAuthorName(String authorName) {
-        this.authorName = authorName;
+    public void setAuthorId(Long authorId) {
+        this.authorId = authorId;
     }
 
     public Integer getPublishedYear() {
