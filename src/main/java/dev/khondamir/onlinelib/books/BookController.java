@@ -23,6 +23,11 @@ public class BookController {
         this.dtoConverter = dtoConverter;
     }
 
+    @GetMapping("/")
+    public String ok() {
+        return "OnlineLib API is running";
+    }
+
     @GetMapping("/books")
     public List<BookDto> getAllBooks(
             @Valid BookSearchFilter bookSearchFilter

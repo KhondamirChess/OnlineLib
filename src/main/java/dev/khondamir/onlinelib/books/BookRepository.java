@@ -15,7 +15,7 @@ import java.util.List;
 public interface BookRepository extends JpaRepository<BookEntity, Long> {
 
 //    List<BookEntity> findAllByAuthorNameIsAndCostLessThan(
-//            String authorName,
+//            Дщт authorName,
 //            Integer costIsLessThan
 //    );
 
@@ -26,7 +26,7 @@ public interface BookRepository extends JpaRepository<BookEntity, Long> {
             
             """)
     List<BookEntity> searchBooks(
-            Long authorId,
+            @Param("authorId") Long authorId,
             @Param("cost") Integer maxCost,
             Pageable pageable
     );
@@ -37,25 +37,25 @@ public interface BookRepository extends JpaRepository<BookEntity, Long> {
             AND (:cost IS NULL OR b.cost = :cost)
             """, nativeQuery = true)
     List<BookEntity> searchBooksNative(
-            String authorName,
+            @Param("authorId") Long authorId,
             @Param("cost") Integer maxCost
     );
 
     @Transactional
     @Modifying
     @Query("""
-    UPDATE BookEntity b
-    SET b.name = :name,
-    b.authorId = :authorId,
-    b.publicationYear = :pubYear,
-    b.pageNumber = :pageNum,
-    b.cost = :cost
-    where b.id = :id
-""")
+                UPDATE BookEntity b
+                SET b.name = :name,
+                b.authorId = :authorId,
+                b.publicationYear = :pubYear,
+                b.pageNumber = :pageNum,
+                b.cost = :cost
+                where b.id = :id
+            """)
     void updateBook(
             @Param("id") Long id,
             @Param("name") String name,
-            @Param("authorName") Long authorId,
+            @Param("authorId") Long authorId,
             @Param("pubYear") Integer publicationYear,
             @Param("pageNum") Integer pageNumber,
             @Param("cost") Integer cost
