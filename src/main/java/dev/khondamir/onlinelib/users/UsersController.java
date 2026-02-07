@@ -1,17 +1,17 @@
 package dev.khondamir.onlinelib.users;
 
+import dev.khondamir.onlinelib.security.jwt.AuthenticationService;
 import jakarta.validation.Valid;
-import org.apache.catalina.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
 @RequestMapping("/users")
 public class UsersController {
 
@@ -19,8 +19,11 @@ public class UsersController {
 
     private UserService userService;
 
-    public UsersController(UserService userService) {
+    private final AuthenticationService authenticationService;
+
+    public UsersController(UserService userService, AuthenticationService authenticationService) {
         this.userService = userService;
+        this.authenticationService = authenticationService;
     }
 
     @PostMapping
@@ -32,5 +35,15 @@ public class UsersController {
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new UserDto(user.id(), user.login()));
+    }
+
+    @PostMapping("/auth")
+    public ResponseEntity<JwtTokenResponse> authenticate(
+            @RequestBody @Valid SignInRequest signInRequest
+    ){
+        log.info("Get request for sign-in: login={}", signInRequest.login());
+        var token = authenticationService.authenticateUser(signInRequest);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new JwtTokenResponse(token));
     }
 }

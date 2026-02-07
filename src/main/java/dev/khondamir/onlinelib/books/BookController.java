@@ -1,11 +1,14 @@
 package dev.khondamir.onlinelib.books;
 
 
+import dev.khondamir.onlinelib.books.purchase.PurchaseService;
+import dev.khondamir.onlinelib.security.jwt.AuthenticationService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,9 +21,15 @@ public class BookController {
 
     private final BookDtoConverter dtoConverter;
 
-    public BookController(BookService bookService, BookDtoConverter dtoConverter) {
+    private final AuthenticationService authenticationService;
+
+    private final PurchaseService purchaseService;
+
+    public BookController(BookService bookService, BookDtoConverter dtoConverter, AuthenticationService authenticationService, PurchaseService purchaseService) {
         this.bookService = bookService;
         this.dtoConverter = dtoConverter;
+        this.authenticationService = authenticationService;
+        this.purchaseService = purchaseService;
     }
 
     @GetMapping("/")
@@ -88,5 +97,15 @@ public class BookController {
     }
 
 
-
+    @PostMapping("/books/{id}/purchase")
+    @PreAuthorize("hasAuthority('USER')")
+    public ResponseEntity<Void> purchaseBook(
+        @PathVariable("id") Long bookId
+    ){
+        log.info("Get request to purchase book: bookId={}", bookId);
+        var currentUser = authenticationService.getCurrentAuthenticatedUserOrThrow();
+        purchaseService.performBookPurchase(currentUser, bookId);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .build();
+    }
 }

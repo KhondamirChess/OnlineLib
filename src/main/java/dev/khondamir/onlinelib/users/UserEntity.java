@@ -3,28 +3,27 @@ package dev.khondamir.onlinelib.users;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "app_users")
+@Table(name = "users")
 public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "login", unique = true)
+    @Column(unique = true)
     private String login;
 
     private String password;
 
-    @Column(name = "role")
     private String role;
 
     public UserEntity() {
     }
 
-    public UserEntity(Long id, String login,  String role, String password) {
+    public UserEntity(Long id, String login,  String password, String role) {
         this.id = id;
         this.login = login;
-        this.role = role;
         this.password = password;
+        this.role = role;
     }
 
     public void setId(Long id) {
