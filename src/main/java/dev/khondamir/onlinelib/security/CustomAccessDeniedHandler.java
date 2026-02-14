@@ -1,7 +1,7 @@
 package dev.khondamir.onlinelib.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.khondamir.onlinelib.ServerErrorDto;
+import dev.khondamir.onlinelib.web.ServerErrorDto;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

@@ -1,6 +1,9 @@
 package dev.khondamir.onlinelib.books;
 
 import dev.khondamir.onlinelib.author.AuthorService;
+import dev.khondamir.onlinelib.books.events.BookEventSender;
+import dev.khondamir.onlinelib.books.events.BookKafkaEvent;
+import dev.khondamir.onlinelib.books.events.EventType;
 import jakarta.persistence.EntityNotFoundException;
 
 import org.springframework.data.domain.Pageable;
@@ -14,12 +17,14 @@ public class BookService {
     private BookRepository bookRepository;
     private final BookEntityConverter entityConverter;
     private final AuthorService authorService;
+    private final BookEventSender bookEventSender;
 
-    public BookService(BookRepository bookRepository, BookEntityConverter entityConverter, AuthorService authorService) {
+    public BookService(BookRepository bookRepository, BookEntityConverter entityConverter, AuthorService authorService, BookEventSender bookEventSender) {
         this.bookRepository = bookRepository;
         this.entityConverter = entityConverter;
 
         this.authorService = authorService;
+        this.bookEventSender = bookEventSender;
     }
 
     public List<Book> searchAllBooks(
@@ -47,9 +52,17 @@ public class BookService {
     public Book createBook(Book bookToCreate) {
         checkAuthorExistence(bookToCreate.authorId());
         var bookToSave = entityConverter.toEntity(bookToCreate);
-        var savedEntity = bookRepository.save(bookToSave);
+        var savedBook = entityConverter.toDomain(
+                bookRepository.save(bookToSave)
+        );
 
-        return entityConverter.toDomain(savedEntity);
+        bookEventSender.sendEvent(new BookKafkaEvent(
+                savedBook.id(),
+                EventType.CREATED,
+                savedBook
+        ));
+
+        return savedBook;
     }
 
 
@@ -65,6 +78,13 @@ public class BookService {
         if (!bookRepository.existsById(id)) {
             throw new EntityNotFoundException("Book with id " + id + " not found");
         }
+
+        bookEventSender.sendEvent(new BookKafkaEvent(
+                id,
+                EventType.REMOVED,
+                null
+        ));
+
         bookRepository.deleteById(id);
     }
 
@@ -85,10 +105,16 @@ public class BookService {
                 bookToUpdate.pageNumber(),
                 bookToUpdate.cost()
         );
+        var updatedBook = entityConverter.toDomain(
+                bookRepository.findById(id).orElseThrow());
 
-        return entityConverter.toDomain(
-                bookRepository.findById(id).orElseThrow()
-        );
+        bookEventSender.sendEvent(new BookKafkaEvent(
+                id,
+                EventType.UPDATED,
+                null
+        ));
+        return updatedBook;
+
     }
 
     private void checkAuthorExistence(Long authorId) {
